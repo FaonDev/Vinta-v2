@@ -6,6 +6,8 @@ import { readdirSync } from 'fs'
 import Express from 'express'
 
 export const expressApp = Express()
+expressApp.use(Express.static('public'))
+
 expressApp.listen(5995)
 // Change port if wanted.
 
