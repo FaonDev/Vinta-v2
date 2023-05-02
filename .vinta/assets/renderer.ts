@@ -19,7 +19,7 @@ expressApp.get('/', (req, res) => {
     setTimeout(() => Cache--, 60000)
 
     if (Cache >= CacheMax) {
-        Cache === CacheMax && console.log(bgRed(`Blocked a DOS/DDOS attempt at '${req.path}'.`))
+        Cache === CacheMax && console.log(bgRed(`Requests limit exceeded at "${req.path}".`))
         return res.send('You\'re temporary blocked.')
     }
 
@@ -37,7 +37,7 @@ for (const route of Routes) {
         setTimeout(() => Cache--, 10000)
     
         if (Cache >= CacheMax) {
-            Cache === CacheMax && console.log(bgRed(`Blocked a DOS/DDOS attempt at '${req.path}'.`))
+            Cache === CacheMax && console.log(bgRed(`Requests limit exceeded at "${req.path}".`))
             return res.send('You\'re temporary blocked.')
         }
 
