@@ -5,8 +5,9 @@ import Settings from '../../vinta-env'
 import { readdirSync } from 'fs'
 import Express from 'express'
 
-const expressApp = Express()
+export const expressApp = Express()
 expressApp.listen(5995)
+// Change port if wanted.
 
 const CacheMax = Settings.RequestsPerMinute
 let Cache = 0
