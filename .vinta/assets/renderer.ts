@@ -1,20 +1,22 @@
 import { bgRed, blue, green, grey, magenta, yellow } from 'colors/safe'
 import { renderToString } from 'react-dom/server'
 import Main from '../../src/routes/+page'
+import Settings from '../../vinta-env'
 import { readdirSync } from 'fs'
 import Express from 'express'
 
 const expressApp = Express()
 expressApp.listen(5995)
 
+const CacheMax = Settings.RequestsPerMinute
 let Cache = 0
 
 expressApp.get('/', (req, res) => {
     Cache++
-    setTimeout(() => Cache--, 10000)
+    setTimeout(() => Cache--, 60000)
 
-    if (Cache >= 20) {
-        Cache === 20 && console.log(bgRed(`Blocked a DOS/DDOS attempt at '${req.path}'.`))
+    if (Cache >= CacheMax) {
+        Cache === CacheMax && console.log(bgRed(`Blocked a DOS/DDOS attempt at '${req.path}'.`))
         return res.send('You\'re temporary blocked.')
     }
 
@@ -31,8 +33,8 @@ for (const route of Routes) {
         Cache++
         setTimeout(() => Cache--, 10000)
     
-        if (Cache >= 20) {
-            Cache === 20 && console.log(bgRed(`Blocked a DOS/DDOS attempt at '${req.path}'.`))
+        if (Cache >= CacheMax) {
+            Cache === CacheMax && console.log(bgRed(`Blocked a DOS/DDOS attempt at '${req.path}'.`))
             return res.send('You\'re temporary blocked.')
         }
 
