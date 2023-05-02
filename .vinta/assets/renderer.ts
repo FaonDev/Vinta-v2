@@ -13,8 +13,8 @@ expressApp.get('/', (req, res) => {
     Cache++
     setTimeout(() => Cache--, 10000)
 
-    if (Cache >= 5) {
-        Cache === 5 && console.log(bgRed(`Blocked a DOS/DDOS attempt at '${req.path}'.`))
+    if (Cache >= 20) {
+        Cache === 20 && console.log(bgRed(`Blocked a DOS/DDOS attempt at '${req.path}'.`))
         return res.send('You\'re temporary blocked.')
     }
 
@@ -31,8 +31,8 @@ for (const route of Routes) {
         Cache++
         setTimeout(() => Cache--, 10000)
     
-        if (Cache >= 5) {
-            Cache === 5 && console.log(bgRed(`Blocked a DOS/DDOS attempt at '${req.path}'.`))
+        if (Cache >= 20) {
+            Cache === 20 && console.log(bgRed(`Blocked a DOS/DDOS attempt at '${req.path}'.`))
             return res.send('You\'re temporary blocked.')
         }
 
