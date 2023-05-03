@@ -37,7 +37,7 @@ for (const route of Routes) expressApp[route.method.toLowerCase()](route.name, (
 console.clear()
 
 console.log(`
-    ${dim(new Date().toLocaleTimeString())} ${rainbow('Vinta')} ${dim('v2.1')}
+    ${dim(new Date().toLocaleTimeString())} ${rainbow('Vinta')} ${dim(`v${Env.VintaVersion}`)}
     ⧽ Local: ${blue(`http://localhost:${Env.AddressPort}/`)}
     ⧽ Routes: ${dim(
         `${Routes.filter(route => route.method === 'GET').length} GET`
@@ -45,3 +45,10 @@ console.log(`
         `${Routes.filter(route => route.method === 'POST').length} POST`
     )}
 `)
+
+async function Newest() {
+    const Md = await (await fetch('https://raw.githubusercontent.com/FaonDev/Vinta-v2/master/.vinta/VERSION.md')).text()
+    if (!Md.includes(String(Env.VintaVersion))) return console.log(`${dim(`(vinta:${Env.VintaVersion})`)} OudatedWarning: Your version is outdated. Update it later with "npx create-vinta@latest".`)
+}
+
+Newest()
