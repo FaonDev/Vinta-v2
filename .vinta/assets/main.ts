@@ -10,6 +10,8 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 */
 
 const StartedAt = Date.now()
+const Version = 2.3
+console.clear()
 
 import { renderToString } from 'react-dom/server'
 import Home from '../../src/routes/+page'
@@ -37,12 +39,10 @@ for (const route of Routes) expressApp[route.method.toLowerCase()](route.name, (
     return route.execute(req, res)
 })
 
-// ---
+Env._QuietMode && console.log(`${`(vinta:${Version})`.dim} Observation: Quiet mode is enabled. Logs are hidden.`)
 
-console.clear()
-
-console.log(`
-    ${`VINTA v${Env._VintaVersion}`.inverse}  ${'ready in'.dim} ${Date.now() - StartedAt} ms
+!Env._QuietMode && console.log(`
+    ${`VINTA v${Version}`.inverse}  ${'ready in'.dim} ${Date.now() - StartedAt} ms
     ${'➜'.green}  ${'Local:'.bold}   ${`http://localhost:${Env._AddressPort}/`.blue}
     ${'➜'.yellow}  ${'Network:'.dim} ${Env._ExposeNetwork ? `http://${networkInterfaces().Ethernet?.[1].address}:${Env._AddressPort}/`.blue : `${'enable on'.grey} vinta-env ${'to expose'.grey}`}
 `)
@@ -52,7 +52,7 @@ async function FetchVersion() {
         await fetch('https://raw.githubusercontent.com/FaonDev/Vinta-v2/master/.vinta/VERSION.md')
     ).text()
 
-    if (Md !== String(Env._VintaVersion)) return console.log(`${`(vinta:${Env._VintaVersion})`.dim} OudatedWarning: Vinta v${Md} is now available.`)
+    if (Md !== String(Version)) return !Env._QuietMode && console.log(`${`(vinta:${Version})`.dim} Oudated: Vinta v${Md} is now available.`)
 }
 
 FetchVersion()
