@@ -1,2 +1,2 @@
-import './assets/renderer'
+import './assets/main'
 import '../src/app'
