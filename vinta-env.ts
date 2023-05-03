@@ -1,4 +1,5 @@
 export default {
-    VintaVersion: 2.2, /* Your Vinta.js version. Can ignore it. */
-    AddressPort: 5995  /* Sets the default server port. */
+    _ExposeNetwork: false, /* Toggle the visibility of machine IP */
+    _VintaVersion: 2.3,    /* Your currently Vinta.js version. */
+    _AddressPort: 5995     /* Sets the default server port. */
 }

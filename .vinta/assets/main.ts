@@ -9,46 +9,50 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+const StartedAt = Date.now()
+
 import { renderToString } from 'react-dom/server'
-import { dim, blue, rainbow } from 'colors/safe'
 import Home from '../../src/routes/+page'
+import { networkInterfaces } from 'os'
 import Env from '../../vinta-env'
 import { readdirSync } from 'fs'
 import Express from 'express'
+import 'colors'
 
 export const expressApp = Express()
+
 expressApp
     .use(Express.static('public'))
-    .listen(Env.AddressPort)
+    .get('/', (_, res) => res.send(renderToString(Home())))
+    .listen(Env._AddressPort)
 
-const Routes = readdirSync(`${process.cwd()}/src/routes`).filter(route => !route.endsWith('tsx')).map(
+const Routes = readdirSync(`${process.cwd()}/src/routes`).filter(
+    route => !route.endsWith('tsx')
+).map(
     route => require(`../../src/routes/${route}`).default
 )
-
-expressApp.get('/', (_, res) => {
-    return res.send(renderToString(Home()))
-})
 
 // @ts-ignore
 for (const route of Routes) expressApp[route.method.toLowerCase()](route.name, (req, res) => {
     return route.execute(req, res)
 })
 
+// ---
+
 console.clear()
 
 console.log(`
-    ${dim(new Date().toLocaleTimeString())} ${rainbow('Vinta')} ${dim(`v${Env.VintaVersion}`)}
-    ⧽ Local: ${blue(`http://localhost:${Env.AddressPort}/`)}
-    ⧽ Routes: ${dim(
-        `${Routes.filter(route => route.method === 'GET').length} GET`
-    )} - ${dim(
-        `${Routes.filter(route => route.method === 'POST').length} POST`
-    )}
+    ${`VINTA v${Env._VintaVersion}`.inverse}  ${'ready in'.dim} ${Date.now() - StartedAt} ms
+    ${'➜'.green}  ${'Local:'.bold}   ${`http://localhost:${Env._AddressPort}/`.blue}
+    ${'➜'.yellow}  ${'Network:'.dim} ${Env._ExposeNetwork ? `http://${networkInterfaces().Ethernet?.[1].address}:${Env._AddressPort}/`.blue : `${'enable on'.grey} vinta-env ${'to expose'.grey}`}
 `)
 
-async function Newest() {
-    const Md = await (await fetch('https://raw.githubusercontent.com/FaonDev/Vinta-v2/master/.vinta/VERSION.md')).text()
-    if (!Md.includes(String(Env.VintaVersion))) return console.log(`${dim(`(vinta:${Env.VintaVersion})`)} OudatedWarning: Your version is outdated. Update it later with "npx create-vinta@latest".`)
+async function FetchVersion() {
+    const Md = await (
+        await fetch('https://raw.githubusercontent.com/FaonDev/Vinta-v2/master/.vinta/VERSION.md')
+    ).text()
+
+    if (Md !== String(Env._VintaVersion)) return console.log(`${`(vinta:${Env._VintaVersion})`.dim} OudatedWarning: Vinta v${Md} is now available.`)
 }
 
-Newest()
+FetchVersion()
