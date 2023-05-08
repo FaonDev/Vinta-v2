@@ -11,6 +11,7 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 
 const StartedAt = Date.now()
 const Version = 2.3
+
 console.clear()
 
 import { renderToString } from 'react-dom/server'
